@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organisation — Agence</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efeb;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --nico-bg: #d0f0e4; --nico-text: #085041;
+    --hugo-bg: #dddaf8; --hugo-text: #3C3489;
+    --eric-bg: #fde8b4; --eric-text: #633806;
+    --tous-bg: #e2e0d8; --tous-text: #444441;
+    --pilote-bg: #e6f8f1; --pilote-text: #0a6644;
+    --suit-bg: #eeecfd; --suit-text: #4a3fa0;
+    --danger: #c0392b;
+    --save-ok: #1a7a4a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --surface: #262624; --surface2: #2e2e2c;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --text: #f0efe8; --text2: #a0a09a; --text3: #606058;
+      --nico-bg: #1a4035; --nico-text: #7de8c0;
+      --hugo-bg: #2a2560; --hugo-text: #b0a8f5;
+      --eric-bg: #4a3010; --eric-text: #f5c878;
+      --tous-bg: #38383a; --tous-text: #c0c0b8;
+      --pilote-bg: #143328; --pilote-text: #6ee0aa;
+      --suit-bg: #201e48; --suit-text: #a09af0;
+      --danger: #e05a4a;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-logo i { font-size: 18px; color: var(--text2); }
+  .header-sep { flex: 1; }
+  .save-indicator {
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s;
+  }
+  .save-indicator.saved { color: var(--save-ok); }
+  .save-indicator i { font-size: 14px; }
+
+  .btn-reset {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    color: var(--text2);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-reset:hover { background: var(--surface2); }
+
+  /* LAYOUT */
+  .main { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  .page-title { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .legend-label { font-size: 12px; color: var(--text3); margin-right: 4px; align-self: center; }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .chip-nico { background: var(--nico-bg); color: var(--nico-text); }
+  .chip-hugo { background: var(--hugo-bg); color: var(--hugo-text); }
+  .chip-eric { background: var(--eric-bg); color: var(--eric-text); }
+  .chip-tous { background: var(--tous-bg); color: var(--tous-text); }
+  .avatar {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* SECTIONS */
+  .sections { display: flex; flex-direction: column; gap: 10px; }
+
+  .section-wrap {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--surface);
+  }
+  .section-head:hover { background: var(--surface2); }
+  .section-ico { font-size: 16px; color: var(--text2); }
+  .section-title-input {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    cursor: text;
+  }
+  .section-title-input:focus { border-bottom: 1.5px solid var(--border2); }
+  .section-count { font-size: 12px; color: var(--text3); }
+  .section-chevron { font-size: 16px; color: var(--text3); transition: transform 0.2s; }
+  .section-chevron.open { transform: rotate(180deg); }
+  .section-del {
+    font-size: 14px; color: var(--text3);
+    background: none; border: none; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px; display: none;
+  }
+  .section-head:hover .section-del { display: inline; }
+  .section-del:hover { color: var(--danger); background: #fee; }
+
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section-body.open { display: block; }
+
+  .cards-list { padding: 10px 12px 4px; display: flex; flex-direction: column; gap: 8px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    position: relative;
+  }
+
+  .card-row { display: flex; gap: 8px; align-items: flex-start; }
+  .card-drag { color: var(--text3); font-size: 16px; cursor: grab; padding-top: 1px; flex-shrink: 0; }
+  .card-drag:active { cursor: grabbing; }
+  .card-label-input {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    line-height: 1.5;
+    resize: none;
+    min-height: 22px;
+    overflow: hidden;
+  }
+  .card-label-input:focus { border-bottom: 1px solid var(--border2); }
+
+  .card-del {
+    font-size: 14px; color: var(--text3);
+    background: none; border: none; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px;
+    opacity: 0; transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .card:hover .card-del { opacity: 1; }
+  .card-del:hover { color: var(--danger); }
+
+  .card-members { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+
+  .member-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    font-family: inherit;
+  }
+  .member-badge:hover { filter: brightness(0.92); }
+  .mb-nico { background: var(--nico-bg); color: var(--nico-text); }
+  .mb-hugo { background: var(--hugo-bg); color: var(--hugo-text); }
+  .mb-eric { background: var(--eric-bg); color: var(--eric-text); }
+  .mb-tous { background: var(--tous-bg); color: var(--tous-text); }
+
+  .role-pill {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 99px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+  }
+  .rp-pilote { background: var(--pilote-bg); color: var(--pilote-text); }
+  .rp-suit { background: var(--suit-bg); color: var(--suit-text); }
+  .rp-none { background: var(--tous-bg); color: var(--tous-text); }
+
+  .member-remove {
+    font-size: 10px;
+    opacity: 0.5;
+    cursor: pointer;
+    line-height: 1;
+    background: none; border: none;
+    color: inherit;
+    padding: 0 1px;
+    font-family: inherit;
+  }
+  .member-remove:hover { opacity: 1; }
+
+  .add-member-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    color: var(--text3);
+    border: 1px dashed var(--border2);
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .add-member-btn:hover { color: var(--text2); border-color: var(--border2); background: var(--surface); }
+
+  .card-notes-input {
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    font-family: inherit;
+    color: var(--text2);
+    background: transparent;
+    border-left: none; border-right: none; border-bottom: none;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+    min-height: 22px;
+    overflow: hidden;
+  }
+  .card-notes-input::placeholder { color: var(--text3); }
+  .card-notes-input:focus { border-top-color: var(--border2); }
+
+  /* ADD BUTTONS */
+  .add-card-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 12px 12px;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--text3);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    width: fit-content;
+  }
+  .add-card-btn:hover { color: var(--text2); background: var(--surface2); }
+  .add-card-btn i { font-size: 14px; }
+
+  .add-section-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    border: 1.5px dashed var(--border2);
+    background: transparent;
+    cursor: pointer;
+    border-radius: var(--radius);
+    font-family: inherit;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .add-section-btn:hover { background: var(--surface); }
+
+  /* MEMBER PICKER DROPDOWN */
+  .dropdown-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: none;
+  }
+  .dropdown-overlay.open { display: block; }
+
+  .member-picker {
+    position: fixed;
+    z-index: 201;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 6px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    display: none;
+    min-width: 140px;
+  }
+  .member-picker.open { display: block; }
+  .picker-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .picker-option:hover { background: var(--surface2); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 12px;
+    padding: 8px 16px;
+    border-radius: 99px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 300;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">
+    <i class="ti ti-building-store"></i>
+    Organisation agence
+  </div>
+  <div class="header-sep"></div>
+  <div class="save-indicator" id="saveIndicator">
+    <i class="ti ti-device-floppy"></i>
+    <span id="saveText">Sauvegardé</span>
+  </div>
+  <button class="btn-reset" onclick="confirmReset()">
+    <i class="ti ti-refresh"></i> Réinitialiser
+  </button>
+</header>
+
+<main class="main">
+  <div class="page-title">Répartition des rôles</div>
+  <div class="page-sub">Cliquez sur n'importe quel texte pour le modifier · Les changements sont sauvegardés automatiquement</div>
+
+  <div class="legend">
+    <span class="legend-label">Membres :</span>
+    <span class="chip chip-nico"><span class="avatar" style="background:var(--nico-bg);color:var(--nico-text)">N</span>Nico</span>
+    <span class="chip chip-hugo"><span class="avatar" style="background:var(--hugo-bg);color:var(--hugo-text)">H</span>Hugo</span>
+    <span class="chip chip-eric"><span class="avatar" style="background:var(--eric-bg);color:var(--eric-text)">E</span>Eric</span>
+    <span class="chip chip-tous"><span class="avatar" style="background:var(--tous-bg);color:var(--tous-text)">T</span>Tous</span>
+    <span style="margin-left:8px" class="legend-label">Rôles :</span>
+    <span class="role-pill rp-pilote" style="padding:3px 10px;font-size:11px">Pilote</span>
+    <span class="role-pill rp-suit" style="padding:3px 10px;font-size:11px">Suit</span>
+  </div>
+
+  <div class="sections" id="sections"></div>
+
+  <button class="add-section-btn" onclick="addSection()">
+    <i class="ti ti-plus"></i> Ajouter une catégorie
+  </button>
+</main>
+
+<!-- Member picker dropdown -->
+<div class="dropdown-overlay" id="dropOverlay" onclick="closePicker()"></div>
+<div class="member-picker" id="memberPicker">
+  <div class="picker-option" onclick="pickMember('Nico')"><span class="chip chip-nico" style="padding:2px 8px;font-size:11px">N · Nico</span></div>
+  <div class="picker-option" onclick="pickMember('Hugo')"><span class="chip chip-hugo" style="padding:2px 8px;font-size:11px">H · Hugo</span></div>
+  <div class="picker-option" onclick="pickMember('Eric')"><span class="chip chip-eric" style="padding:2px 8px;font-size:11px">E · Eric</span></div>
+  <div class="picker-option" onclick="pickMember('Tous')"><span class="chip chip-tous" style="padding:2px 8px;font-size:11px">— · Tous</span></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'agence-org-v2';
+const MEMBERS = ['Nico','Hugo','Eric','Tous'];
+const MEMBER_CLS = { Nico:'nico', Hugo:'hugo', Eric:'eric', Tous:'tous' };
+const ROLES = ['Pilote','Suit','—'];
+
+const DEFAULT_DATA = [
+  { id:'s1', icon:'ti-home', name:'Immobilier', open:true, cards:[
+    { id:'c1', label:'Expertise, connaissances métier', members:[{name:'Nico',role:'Pilote'},{name:'Hugo',role:'Suit'}], notes:'' },
+    { id:'c2', label:'Gestion client', members:[{name:'Nico',role:'Pilote'},{name:'Hugo',role:'Suit'}], notes:'' },
+    { id:'c3', label:'Visites', members:[{name:'Nico',role:'Pilote'},{name:'Hugo',role:'Suit'}], notes:'' },
+    { id:'c4', label:'Estimations', members:[{name:'Nico',role:'Pilote'},{name:'Hugo',role:'Suit'}], notes:'' },
+  ]},
+  { id:'s2', icon:'ti-file-text', name:'Back office immo', open:true, cards:[
+    { id:'c5', label:'Rédaction des compromis', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+    { id:'c6', label:'Attribution & suivi mandats', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+    { id:'c7', label:'Suivi des offres', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+    { id:'c8', label:'Tableaux de bord & suivi facturation notaire', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+  ]},
+  { id:'s3', icon:'ti-photo', name:'Marketing', open:true, cards:[
+    { id:'c9', label:'Animation réseaux sociaux', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+    { id:'c10', label:'Prise de vue & montage', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+    { id:'c11', label:'Site web — articles & SEO', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s4', icon:'ti-layout-grid', name:'Supports & commandes', open:true, cards:[
+    { id:'c12', label:'Cartes de visite & supports print', members:[{name:'Hugo',role:'Pilote'}], notes:'⚠️ Priorité — pas encore fait' },
+    { id:'c13', label:'Suivi des stocks & commandes', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s5', icon:'ti-users', name:'Partenaires', open:false, cards:[
+    { id:'c14', label:'LBC, SeLoger, portails immo', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+    { id:'c15', label:'Diagnostiqueurs & prestataires', members:[{name:'Tous',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s6', icon:'ti-receipt', name:'Administratif', open:false, cards:[
+    { id:'c16', label:'Gestion des factures', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+    { id:'c17', label:'GED (gestion électronique des documents)', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s7', icon:'ti-id-badge', name:'RH', open:false, cards:[
+    { id:'c18', label:'Paie', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+    { id:'c19', label:'Suivi commissions', members:[{name:'Hugo',role:'Pilote'},{name:'Nico',role:'Suit'}], notes:'' },
+    { id:'c20', label:'Congés & planning', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+    { id:'c21', label:'Mutuelle & admin RH', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s8', icon:'ti-device-laptop', name:'Informatique', open:false, cards:[
+    { id:'c22', label:'Suivi du parc & évolutions', members:[{name:'Hugo',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s9', icon:'ti-calendar-event', name:'Événementiel', open:false, cards:[
+    { id:'c23', label:'Présence aux événements', members:[{name:'Tous',role:'Pilote'}], notes:'' },
+  ]},
+  { id:'s10', icon:'ti-key', name:'Locations', open:false, cards:[
+    { id:'c24', label:'Mise en place du process location', members:[{name:'Tous',role:'—'}], notes:'À définir ensemble — règles, responsable, outils' },
+  ]},
+];
+
+let data = [];
+let uid = 200;
+let saveTimer = null;
+let pickerTarget = null; // {cardId, memberIdx}
+
+function load() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) { data = JSON.parse(stored); return; }
+  } catch(e) {}
+  data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const ind = document.getElementById('saveIndicator');
+    const txt = document.getElementById('saveText');
+    ind.classList.add('saved');
+    txt.textContent = 'Sauvegardé ✓';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { ind.classList.remove('saved'); txt.textContent = 'Sauvegarde auto'; }, 2000);
+  } catch(e) {}
+}
+
+function scheduleSave() {
+  const txt = document.getElementById('saveText');
+  txt.textContent = 'Modification...';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 600);
+}
+
+function genId() { return 'x' + (uid++); }
+
+function findCard(id) {
+  for (const s of data) for (const c of s.cards) if (c.id === id) return c;
+  return null;
+}
+function findSection(id) { return data.find(s => s.id === id); }
+
+// ---- PICKER ----
+function openPicker(cardId, memberIdx, el) {
+  pickerTarget = {cardId, memberIdx};
+  const picker = document.getElementById('memberPicker');
+  const overlay = document.getElementById('dropOverlay');
+  const rect = el.getBoundingClientRect();
+  picker.style.top = (rect.bottom + 4) + 'px';
+  picker.style.left = rect.left + 'px';
+  picker.classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closePicker() {
+  document.getElementById('memberPicker').classList.remove('open');
+  document.getElementById('dropOverlay').classList.remove('open');
+  pickerTarget = null;
+}
+
+function pickMember(name) {
+  if (!pickerTarget) return;
+  const card = findCard(pickerTarget.cardId);
+  if (card) { card.members[pickerTarget.memberIdx].name = name; scheduleSave(); render(); }
+  closePicker();
+}
+
+// ---- ROLE CYCLE ----
+function cycleRole(cardId, memberIdx) {
+  const card = findCard(cardId);
+  if (!card) return;
+  const m = card.members[memberIdx];
+  m.role = ROLES[(ROLES.indexOf(m.role) + 1) % ROLES.length];
+  scheduleSave(); render();
+}
+
+function removeMember(cardId, memberIdx) {
+  const card = findCard(cardId);
+  if (!card) return;
+  card.members.splice(memberIdx, 1);
+  scheduleSave(); render();
+}
+
+function addMember(cardId) {
+  const card = findCard(cardId);
+  if (!card) return;
+  card.members.push({name:'Nico', role:'Suit'});
+  scheduleSave(); render();
+}
+
+function removeCard(sectionId, cardId) {
+  const section = findSection(sectionId);
+  if (!section) return;
+  section.cards = section.cards.filter(c => c.id !== cardId);
+  scheduleSave(); render();
+}
+
+function addCard(sectionId) {
+  const section = findSection(sectionId);
+  if (!section) return;
+  section.open = true;
+  const id = genId();
+  section.cards.push({id, label:'Nouvelle tâche', members:[{name:'Nico',role:'Pilote'}], notes:''});
+  scheduleSave(); render();
+  setTimeout(() => {
+    const el = document.querySelector(`[data-card-label="${id}"]`);
+    if (el) { el.focus(); el.select ? el.select() : el.setSelectionRange(0, el.value.length); }
+  }, 30);
+}
+
+function removeSection(sectionId) {
+  const idx = data.findIndex(s => s.id === sectionId);
+  if (idx > -1) { data.splice(idx, 1); scheduleSave(); render(); }
+}
+
+function addSection() {
+  const id = genId();
+  data.push({id, icon:'ti-folder', name:'Nouvelle catégorie', open:true, cards:[]});
+  scheduleSave(); render();
+  setTimeout(() => {
+    const el = document.querySelector(`[data-section-title="${id}"]`);
+    if (el) { el.focus(); el.select(); }
+  }, 30);
+}
+
+function toggleSection(sectionId) {
+  const s = findSection(sectionId);
+  if (s) { s.open = !s.open; scheduleSave(); render(); }
+}
+
+function confirmReset() {
+  if (confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) {
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    save(); render();
+    showToast('Données réinitialisées');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+// ---- RENDER ----
+function render() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+
+  for (const section of data) {
+    const wrap = document.createElement('div');
+    wrap.className = 'section-wrap';
+
+    const bodyOpen = section.open !== false;
+
+    wrap.innerHTML = `
+      <div class="section-head" onclick="handleSectionHeadClick(event,'${section.id}')">
+        <i class="ti ${section.icon} section-ico" aria-hidden="true"></i>
+        <input type="text" class="section-title-input" value="${escHtml(section.name)}"
+          data-section-title="${section.id}"
+          onclick="event.stopPropagation()"
+          onchange="updateSectionName('${section.id}',this.value)"
+          oninput="updateSectionName('${section.id}',this.value)"
+        />
+        <span class="section-count">${section.cards.length} tâche${section.cards.length!==1?'s':''}</span>
+        <button class="section-del" onclick="event.stopPropagation();removeSection('${section.id}')" title="Supprimer la catégorie">
+          <i class="ti ti-trash"></i>
+        </button>
+        <i class="ti ti-chevron-down section-chevron ${bodyOpen?'open':''}"></i>
+      </div>
+      <div class="section-body ${bodyOpen?'open':''}" id="body-${section.id}">
+        <div class="cards-list" id="cards-${section.id}"></div>
+        <button class="add-card-btn" onclick="addCard('${section.id}')">
+          <i class="ti ti-plus"></i> Ajouter une tâche
+        </button>
+      </div>
+    `;
+
+    container.appendChild(wrap);
+
+    const cardsList = wrap.querySelector(`#cards-${section.id}`);
+    for (const card of section.cards) {
+      cardsList.appendChild(buildCard(card, section.id));
+    }
+  }
+}
+
+function handleSectionHeadClick(e, sectionId) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+  toggleSection(sectionId);
+}
+
+function updateSectionName(id, val) {
+  const s = findSection(id);
+  if (s) { s.name = val; scheduleSave(); }
+  // update count stays correct on next render
+}
+
+function buildCard(card, sectionId) {
+  const div = document.createElement('div');
+  div.className = 'card';
+
+  // Members HTML
+  const membersHtml = card.members.map((m, i) => {
+    const cls = MEMBER_CLS[m.name] || 'tous';
+    const roleCls = m.role === 'Pilote' ? 'rp-pilote' : m.role === 'Suit' ? 'rp-suit' : 'rp-none';
+    return `<button class="member-badge mb-${cls}"
+        onclick="openPicker('${card.id}',${i},this)" title="Changer de membre">${m.name}
+      </button>
+      <span class="role-pill ${roleCls}" onclick="cycleRole('${card.id}',${i})" title="Changer le rôle" style="cursor:pointer">${m.role}</span>
+      <button class="member-remove" onclick="removeMember('${card.id}',${i})" title="Retirer">×</button>`;
+  }).join('');
+
+  div.innerHTML = `
+    <div class="card-row">
+      <i class="ti ti-grip-vertical card-drag" aria-hidden="true"></i>
+      <textarea class="card-label-input" rows="1"
+        data-card-label="${card.id}"
+        oninput="autoResize(this);updateCardLabel('${card.id}',this.value)"
+      >${escHtml(card.label)}</textarea>
+      <button class="card-del" onclick="removeCard('${sectionId}','${card.id}')" title="Supprimer">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="card-members">
+      ${membersHtml}
+      <button class="add-member-btn" onclick="addMember('${card.id}')">
+        <i class="ti ti-plus" style="font-size:11px"></i> Ajouter
+      </button>
+    </div>
+    <textarea class="card-notes-input" placeholder="Pistes de réflexion, notes…"
+      oninput="autoResize(this);updateCardNotes('${card.id}',this.value)"
+    >${escHtml(card.notes)}</textarea>
+  `;
+
+  // resize textareas after insert
+  setTimeout(() => {
+    div.querySelectorAll('textarea').forEach(autoResize);
+  }, 0);
+
+  return div;
+}
+
+function updateCardLabel(id, val) {
+  const c = findCard(id);
+  if (c) { c.label = val; scheduleSave(); }
+}
+
+function updateCardNotes(id, val) {
+  const c = findCard(id);
+  if (c) { c.notes = val; scheduleSave(); }
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// INIT
+load();
+render();
+</script>
+</body>
+</html>
